@@ -77,8 +77,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .ti-val.cgn{color:var(--green);}
 .ti-sub{font-size:9px;color:var(--text2);margin-top:2px;}
 /* VIDEO */
-.video-card{grid-column:1;grid-row:4/6;display:flex;flex-direction:column;min-height:380px;}
-.vwrap{flex:1;position:relative;min-height:190px;border-radius:8px;overflow:hidden;background:#000;margin-top:6px;}
+.video-card{grid-column:1;grid-row:4/6;display:flex;flex-direction:column;min-height:240px;}
+.vwrap{flex:1;position:relative;min-height:120px;max-height:200px;border-radius:8px;overflow:hidden;background:#000;margin-top:6px;}
 .vwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 .vtabs{display:flex;gap:6px;margin-top:8px;}
 .vtab{font-size:9px;font-weight:700;letter-spacing:.08em;padding:4px 10px;border-radius:999px;cursor:pointer;border:.5px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--font);transition:all .15s;}
@@ -89,7 +89,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .vlink:hover{background:rgba(79,142,255,.18);}
 /* TRAJECTORY */
 .traj{grid-column:2/4;grid-row:4;}
-.traj-wrap{width:100%;margin-top:4px;}
+.traj-wrap{width:100%;margin-top:4px;position:relative;}
+#traj3d{width:100%;height:320px;border-radius:8px;overflow:hidden;display:block;cursor:grab;}
+#traj3d:active{cursor:grabbing;}
+.traj-controls{display:flex;gap:6px;margin-top:7px;align-items:center;flex-wrap:wrap;}
+.traj-btn{font-size:9px;font-weight:700;letter-spacing:.08em;padding:4px 11px;border-radius:999px;cursor:pointer;border:.5px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--font);transition:all .15s;}
+.traj-btn.on,.traj-btn:hover{background:rgba(79,142,255,.15);color:var(--accent2);border-color:rgba(79,142,255,.4);}
+.traj-hint{font-size:9px;color:var(--text2);margin-left:auto;letter-spacing:.05em;}
 /* FEED */
 .feed{grid-column:2;grid-row:5;}
 .flist{max-height:200px;overflow-y:auto;}
@@ -158,7 +164,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   .ti-val{font-size:14px;}
 
   /* Video — full width, taller aspect */
-  .vwrap{min-height:210px;}
+  .vwrap{min-height:140px;max-height:160px;}
   .vtab{font-size:8px;padding:5px 9px;}
   /* bigger touch targets for tabs */
   .vtab,.lbtn,.vlink{min-height:32px;display:inline-flex;align-items:center;}
@@ -308,117 +314,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <!-- TRAJECTORY -->
 <div class="card traj">
-  <div class="clbl"><span class="clbl-line"></span>Cislunar Trajectory — Figure-8 Free Return</div>
+  <div class="clbl"><span class="clbl-line"></span>Cislunar Trajectory — Figure-8 Free Return &nbsp;<span style="font-size:8px;color:var(--teal);font-weight:700;">3D INTERACTIVE</span></div>
   <div class="traj-wrap">
-    <!--
-      Figure-8 Free-Return geometry (viewBox 0 0 700 200):
-      Earth  cx=85   cy=100   Moon cx=615  cy=100
-      The classic Apollo free-return traces a figure-8:
-        • Outbound (upper arc): leaves Earth, arcs ABOVE midline, wraps around Moon's far side
-        • Return  (lower arc): swings BELOW midline back to Earth
-      Crossover point near Moon (~x=540, y=100) creates the figure-8 intersection.
-    -->
-    <svg width="100%" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="eg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stop-color="#1D9E75" stop-opacity=".7"/>
-          <stop offset="65%"  stop-color="#1D9E75" stop-opacity=".1"/>
-          <stop offset="100%" stop-color="#1D9E75" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="mg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stop-color="#9ca3b0" stop-opacity=".6"/>
-          <stop offset="65%"  stop-color="#9ca3b0" stop-opacity=".07"/>
-          <stop offset="100%" stop-color="#9ca3b0" stop-opacity="0"/>
-        </radialGradient>
-        <!-- Gradient along outbound leg: blue → cyan -->
-        <linearGradient id="out-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stop-color="#4f8eff" stop-opacity=".9"/>
-          <stop offset="100%" stop-color="#2de3c4" stop-opacity=".7"/>
-        </linearGradient>
-        <!-- Gradient along return leg: gold → blue -->
-        <linearGradient id="ret-grad" x1="100%" y1="0%" x2="0%" y2="0%">
-          <stop offset="0%"   stop-color="#f5b942" stop-opacity=".8"/>
-          <stop offset="100%" stop-color="#4f8eff" stop-opacity=".9"/>
-        </linearGradient>
-        <!-- Arrow markers -->
-        <marker id="arr-out" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0 0 L6 3 L0 6 Z" fill="#2de3c4" opacity=".8"/>
-        </marker>
-        <marker id="arr-ret" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0 0 L6 3 L0 6 Z" fill="#f5b942" opacity=".8"/>
-        </marker>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="2.5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-
-      <!-- ── EARTH ── -->
-      <circle cx="85" cy="100" r="48" fill="url(#eg)"/>
-      <circle cx="85" cy="100" r="22" fill="#1D9E75" opacity=".75"/>
-      <circle cx="85" cy="100" r="14" fill="#2bc890"/>
-      <text x="85" y="152" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(160,185,230,.55)" font-weight="600">Earth</text>
-
-      <!-- ── MOON ── -->
-      <circle cx="615" cy="100" r="42" fill="url(#mg)"/>
-      <circle cx="615" cy="100" r="19" fill="#8e939f" opacity=".72"/>
-      <circle cx="615" cy="100" r="11" fill="#b0b4bf"/>
-      <text x="615" y="152" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(160,185,230,.55)" font-weight="600">Moon</text>
-
-      <!-- ── OUTBOUND ARC (upper): Earth → Moon far-side loop ──
-           Leaves Earth at ~(105,100), arcs high (peaks ~y=18), sweeps around Moon,
-           crosses the midline near (545,100) heading south, curves around Moon's near side,
-           returns to crossing point — completing the Moon loop half of the figure-8.
-           Path: start at Earth right, curve up and across, wrap tightly around Moon,
-           arrive at crossover from the south side.
-      -->
-      <!-- Outbound leg: Earth → flyby approach (upper arc, blue-cyan) -->
-      <path id="outbound-path"
-        d="M104 100 C140 40, 280 14, 420 28 C490 36, 545 65, 575 82"
-        fill="none" stroke="url(#out-grad)" stroke-width="1.8"
-        marker-end="url(#arr-out)"/>
-
-      <!-- Moon loop — wraps around Moon's far side (right side of SVG) -->
-      <path
-        d="M575 82 C598 94, 640 100, 648 100 C648 100, 640 100, 622 96 C604 90, 590 105, 575 118"
-        fill="none" stroke="rgba(45,227,196,.5)" stroke-width="1.5" stroke-dasharray="4 3"/>
-
-      <!-- ── RETURN ARC (lower): Moon → Earth ──
-           From crossover point, sweeps below midline, arcs down, returns to Earth.
-      -->
-      <path id="return-path"
-        d="M575 118 C545 135, 490 164, 420 172 C280 186, 140 160, 104 100"
-        fill="none" stroke="url(#ret-grad)" stroke-width="1.8"
-        marker-end="url(#arr-ret)"/>
-
-      <!-- Crossover / figure-8 intersection marker -->
-      <circle cx="575" cy="100" r="3.5" fill="rgba(255,255,255,.25)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
-
-      <!-- ── FLYBY CALLOUT ── -->
-      <line x1="622" y1="85" x2="590" y2="55" stroke="rgba(160,185,230,.3)" stroke-width="1" stroke-dasharray="3 3"/>
-      <text x="588" y="51" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.5)">~6,513 km</text>
-      <text x="588" y="62" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.5)">flyby</text>
-
-      <!-- Direction labels -->
-      <text x="310" y="13" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(45,227,196,.6)" letter-spacing="0.04em">OUTBOUND  (Days 1–6)</text>
-      <text x="310" y="193" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(245,185,66,.6)" letter-spacing="0.04em">RETURN  (Days 6–10)</text>
-
-      <!-- ── ORION DOT (animated, moveable by JS) ── -->
-      <g id="orion-g" transform="translate(250,28)">
-        <circle r="13" fill="#4f8eff" opacity=".18">
-          <animate attributeName="r" values="13;19;13" dur="2.2s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".18;0;.18" dur="2.2s" repeatCount="indefinite"/>
-        </circle>
-        <circle r="5.5" fill="#4f8eff" filter="url(#glow)"/>
-        <text text-anchor="middle" dy="-13" font-family="Space Mono,monospace" font-size="9" fill="#7eb3ff" font-weight="700">ORION</text>
-      </g>
-
-      <!-- ── LEGEND ── -->
-      <line x1="10" y1="186" x2="34" y2="186" stroke="rgba(79,142,255,.7)" stroke-width="1.8"/>
-      <text x="37" y="189" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(160,185,230,.45)">Free-return path</text>
-      <circle cx="154" cy="186" r="4" fill="#4f8eff"/>
-      <text x="161" y="189" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(160,185,230,.45)">Orion (est.)</text>
-    </svg>
+    <canvas id="traj3d"></canvas>
+    <div class="traj-controls">
+      <button class="traj-btn on"  id="tv-free"  onclick="setTrajView('free')">FREE ORBIT</button>
+      <button class="traj-btn"     id="tv-top"   onclick="setTrajView('top')">TOP</button>
+      <button class="traj-btn"     id="tv-side"  onclick="setTrajView('side')">SIDE</button>
+      <button class="traj-btn"     id="tv-chase" onclick="setTrajView('chase')">CHASE CAM</button>
+      <span class="traj-hint">🖱 Drag · Scroll zoom</span>
+    </div>
   </div>
 </div>
 
@@ -717,9 +622,7 @@ function update(){
     document.getElementById('spd-sub').textContent = '';
   }
 
-  // Orion dot — use real ECI projection when API data available, else fallback path
-  const pos = orionSVGPos(liveData) || lerpOrion(prog);
-  document.getElementById('orion-g').setAttribute('transform',`translate(${pos.x},${pos.y})`);
+  // (Orion position is now driven by the 3D scene — see Three.js block below)
 
   renderFeed(days);
   renderTL(days);
@@ -753,6 +656,342 @@ setInterval(refreshAPI, 60000);
 // UI update every second
 update();
 setInterval(update, 1000);
+</script>
+<!-- ── THREE.JS 3D TRAJECTORY ─────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ── Scene setup ── */
+const canvas = document.getElementById('traj3d');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 2, 0.1, 2000);
+camera.position.set(0, 120, 320);
+camera.lookAt(0, 0, 0);
+
+function resize3d() {
+  const w = canvas.clientWidth, h = Math.max(canvas.clientHeight, 1);
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+resize3d();
+new ResizeObserver(resize3d).observe(canvas);
+
+/* ── Lighting ── */
+scene.add(new THREE.AmbientLight(0x223355, 1.8));
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(400, 200, 300);
+scene.add(sun);
+
+/* ── Stars ── */
+(function(){
+  const geo = new THREE.BufferGeometry();
+  const n = 1800;
+  const pos = new Float32Array(n * 3);
+  for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - 0.5) * 1800;
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xd0ddff, size: 1.1, transparent: true, opacity: 0.55 })));
+})();
+
+/* ── Scale: 1 unit = 3000 km ── */
+const KM = 3000;
+const EARTH_POS = new THREE.Vector3(0, 0, 0);
+const MOON_POS  = new THREE.Vector3(384400 / KM, 0, 0); // ~128 units away
+
+/* ── Earth ── */
+const earthGeo  = new THREE.SphereGeometry(6371 / KM, 48, 48);
+const earthMat  = new THREE.MeshPhongMaterial({ color: 0x1a7a55, emissive: 0x051a10, shininess: 40 });
+const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+scene.add(earthMesh);
+
+// Earth atmosphere glow
+const atmGeo = new THREE.SphereGeometry(6371 / KM * 1.3, 32, 32);
+const atmMat = new THREE.MeshPhongMaterial({ color: 0x2de3c4, transparent: true, opacity: 0.08, side: THREE.BackSide });
+scene.add(new THREE.Mesh(atmGeo, atmMat));
+
+// Earth label sprite
+function makeLabel(text, color) {
+  const c2 = document.createElement('canvas');
+  c2.width = 256; c2.height = 64;
+  const ctx2 = c2.getContext('2d');
+  ctx2.font = 'bold 28px "Space Grotesk", sans-serif';
+  ctx2.fillStyle = color;
+  ctx2.textAlign = 'center';
+  ctx2.fillText(text, 128, 42);
+  const tex = new THREE.CanvasTexture(c2);
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+  const sp  = new THREE.Sprite(mat);
+  sp.scale.set(22, 5.5, 1);
+  return sp;
+}
+const earthLabel = makeLabel('Earth', 'rgba(160,220,180,0.85)');
+earthLabel.position.set(0, -8, 0);
+scene.add(earthLabel);
+
+/* ── Moon ── */
+const moonGeo  = new THREE.SphereGeometry(1737 / KM, 36, 36);
+const moonMat  = new THREE.MeshPhongMaterial({ color: 0x8e939f, emissive: 0x111318, shininess: 10 });
+const moonMesh = new THREE.Mesh(moonGeo, moonMat);
+moonMesh.position.copy(MOON_POS);
+scene.add(moonMesh);
+
+const moonLabel = makeLabel('Moon', 'rgba(160,185,230,0.8)');
+moonLabel.position.set(MOON_POS.x, MOON_POS.y - 5, 0);
+scene.add(moonLabel);
+
+/* ── Figure-8 Free-Return Trajectory path ──
+   We build the path as a CatmullRom curve through key waypoints.
+   All positions in scene units (1u = 3000 km).
+   The figure-8 is tilted ~5° out of the ecliptic for visual depth.
+*/
+const R = 384400 / KM; // ~128 units (Earth-Moon distance)
+
+function pt(x, y, z) { return new THREE.Vector3(x, y, z); }
+
+// Key waypoints tracing the figure-8:
+// Start at Earth LEO, outbound arcs above ecliptic, wraps Moon far side,
+// crossover near Moon, return sweeps below ecliptic back to Earth
+const trajPoints = [
+  pt( 2.5,  0,    0),        // Earth departure (LEO tangent)
+  pt( 18,   8,    0),
+  pt( 40,   16,   4),
+  pt( 65,   20,   6),
+  pt( 90,   16,   5),
+  pt( 112,  8,    3),
+  pt( 124,  2,    1),        // approaching Moon near side
+  pt( 132,  0,   -1),        // closest approach — far side loop entry
+  pt( 136, -3,   -2),        // behind Moon (far side)
+  pt( 132, -5,   -2),
+  pt( 124, -4,   -1),        // figure-8 crossover near Moon
+  pt( 112, -8,   -2),
+  pt(  90, -16,  -4),
+  pt(  65, -22,  -5),
+  pt(  40, -18,  -4),
+  pt(  18, -10,  -2),
+  pt(  2.5,  0,   0),        // Earth re-entry
+];
+
+const curve = new THREE.CatmullRomCurve3(trajPoints, false, 'catmullrom', 0.5);
+const N = 300;
+const pts = curve.getPoints(N);
+
+// Color each segment: outbound = cyan, return = gold
+function segColor(i) {
+  const t = i / N;
+  if (t < 0.55) {
+    // Outbound: blue → cyan
+    const f = t / 0.55;
+    return new THREE.Color().lerpColors(new THREE.Color(0x4f8eff), new THREE.Color(0x2de3c4), f);
+  } else {
+    // Return: gold → blue
+    const f = (t - 0.55) / 0.45;
+    return new THREE.Color().lerpColors(new THREE.Color(0xf5b942), new THREE.Color(0x4f8eff), f);
+  }
+}
+
+const trajGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(N * 3);
+const colors    = new Float32Array(N * 3);
+for (let i = 0; i < N; i++) {
+  positions[i*3]   = pts[i].x;
+  positions[i*3+1] = pts[i].y;
+  positions[i*3+2] = pts[i].z;
+  const c = segColor(i);
+  colors[i*3] = c.r; colors[i*3+1] = c.g; colors[i*3+2] = c.b;
+}
+trajGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+trajGeo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+const trajLine = new THREE.Line(trajGeo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.85 }));
+scene.add(trajLine);
+
+// Ghost/trail tube for depth
+const tubeGeo = new THREE.TubeGeometry(curve, 200, 0.18, 6, false);
+const tubeMat = new THREE.MeshBasicMaterial({ color: 0x4f8eff, transparent: true, opacity: 0.06 });
+scene.add(new THREE.Mesh(tubeGeo, tubeMat));
+
+/* ── Orion spacecraft marker ── */
+const orionGroup = new THREE.Group();
+// Core dot
+const orionCore = new THREE.Mesh(
+  new THREE.SphereGeometry(1.1, 16, 16),
+  new THREE.MeshPhongMaterial({ color: 0x4f8eff, emissive: 0x2255aa, shininess: 100 })
+);
+orionGroup.add(orionCore);
+// Pulse ring
+const ringGeo = new THREE.RingGeometry(1.6, 2.2, 32);
+const ringMat = new THREE.MeshBasicMaterial({ color: 0x4f8eff, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+const ring = new THREE.Mesh(ringGeo, ringMat);
+orionGroup.add(ring);
+scene.add(orionGroup);
+
+// Orion label
+const orionLabel = makeLabel('ORION', 'rgba(126,179,255,0.95)');
+orionLabel.scale.set(16, 4, 1);
+scene.add(orionLabel);
+
+/* ── Crossover marker (figure-8 intersection) ── */
+const crossGeo = new THREE.SphereGeometry(0.8, 12, 12);
+const crossMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 });
+const crossMarker = new THREE.Mesh(crossGeo, crossMat);
+crossMarker.position.set(pts[Math.floor(N * 0.55)].x, pts[Math.floor(N * 0.55)].y, pts[Math.floor(N * 0.55)].z);
+scene.add(crossMarker);
+
+// Flyby callout label near Moon
+const flybyLabel = makeLabel('~6,513 km flyby', 'rgba(160,185,230,0.6)');
+flybyLabel.scale.set(22, 5, 1);
+flybyLabel.position.set(MOON_POS.x + 2, MOON_POS.y + 7, 0);
+scene.add(flybyLabel);
+
+/* ── Camera views ── */
+let currentView = 'free';
+let targetCamPos   = new THREE.Vector3(0, 120, 320);
+let targetLookAt   = new THREE.Vector3(R/2, 0, 0);
+let camLerpT = 0;
+let camLerpFrom = new THREE.Vector3();
+let camLerpFromLook = new THREE.Vector3();
+let camLerping = false;
+
+function setTrajView(v) {
+  currentView = v;
+  ['free','top','side','chase'].forEach(id => {
+    const el = document.getElementById('tv-'+id);
+    if (el) el.classList.toggle('on', id === v);
+  });
+  if (v === 'free') return; // keep current orbit
+  camLerpFrom.copy(camera.position);
+  camLerpFromLook.copy(lookTarget);
+  camLerpT = 0;
+  camLerping = true;
+  if (v === 'top') {
+    targetCamPos.set(R/2, 280, 0);
+    targetLookAt.set(R/2, 0, 0);
+  } else if (v === 'side') {
+    targetCamPos.set(R/2, 0, 340);
+    targetLookAt.set(R/2, 0, 0);
+  }
+  // 'chase' handled per-frame
+}
+window.setTrajView = setTrajView;
+
+/* ── Orbit controls (manual, no import needed) ── */
+let isDragging = false;
+let prevMouse  = { x: 0, y: 0 };
+let spherical  = { theta: 0.3, phi: 1.1, r: 320 };
+let lookTarget = new THREE.Vector3(R/2, 0, 0);
+
+canvas.addEventListener('mousedown', e => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; currentView = 'free'; });
+window.addEventListener('mouseup',   () => isDragging = false);
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const dx = e.clientX - prevMouse.x;
+  const dy = e.clientY - prevMouse.y;
+  spherical.theta -= dx * 0.008;
+  spherical.phi   = Math.max(0.15, Math.min(Math.PI - 0.15, spherical.phi + dy * 0.007));
+  prevMouse = { x: e.clientX, y: e.clientY };
+});
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  spherical.r = Math.max(40, Math.min(600, spherical.r + e.deltaY * 0.4));
+}, { passive: false });
+
+// Touch support
+let lastTouch = null;
+canvas.addEventListener('touchstart', e => { if(e.touches.length===1){ isDragging=true; lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY}; currentView='free'; } });
+canvas.addEventListener('touchend',   () => { isDragging=false; lastTouch=null; });
+canvas.addEventListener('touchmove',  e => {
+  e.preventDefault();
+  if (!isDragging || !lastTouch) return;
+  const dx = e.touches[0].clientX - lastTouch.x;
+  const dy = e.touches[0].clientY - lastTouch.y;
+  spherical.theta -= dx * 0.009;
+  spherical.phi = Math.max(0.15, Math.min(Math.PI-0.15, spherical.phi + dy * 0.008));
+  lastTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: false });
+
+/* ── Animate ── */
+let orionT = 0;  // 0–1 along trajectory; synced to mission progress externally
+const ORION_SPEED = 1 / (10 * 60 * 60);  // completes in ~10 mission days at 60fps
+
+let pulsePhase = 0;
+let frame = 0;
+
+function animate3d() {
+  requestAnimationFrame(animate3d);
+  frame++;
+
+  // Sync Orion position to mission progress when available, else animate autonomously
+  const missionProg = (typeof getMET === 'function' && typeof TOTAL !== 'undefined')
+    ? Math.min(getMET() / TOTAL, 1) : -1;
+  if (missionProg >= 0) {
+    orionT = missionProg;
+  } else {
+    orionT = (orionT + ORION_SPEED) % 1;
+  }
+
+  // Orion position on curve
+  const orionPt = curve.getPoint(orionT);
+  orionGroup.position.copy(orionPt);
+  orionLabel.position.set(orionPt.x, orionPt.y + 3.5, orionPt.z);
+
+  // Pulse ring scale
+  pulsePhase += 0.05;
+  const ps = 1 + 0.5 * Math.abs(Math.sin(pulsePhase));
+  ring.scale.set(ps, ps, 1);
+  ringMat.opacity = 0.35 * (1 - 0.6 * Math.abs(Math.sin(pulsePhase)));
+  ring.lookAt(camera.position);
+
+  // Earth rotation
+  earthMesh.rotation.y += 0.002;
+
+  // Moon slow rotation
+  moonMesh.rotation.y += 0.0005;
+
+  // Camera — chase cam follows Orion
+  if (currentView === 'chase') {
+    const ahead = curve.getPoint(Math.min(orionT + 0.03, 1));
+    const behind = curve.getPoint(Math.max(orionT - 0.04, 0));
+    const dir = ahead.clone().sub(behind).normalize();
+    const offset = dir.clone().multiplyScalar(-25).add(new THREE.Vector3(0, 8, 0));
+    camera.position.lerp(orionPt.clone().add(offset), 0.05);
+    lookTarget.lerp(orionPt, 0.05);
+    camera.lookAt(lookTarget);
+    return;
+  }
+
+  // Lerp to preset view
+  if (camLerping) {
+    camLerpT = Math.min(camLerpT + 0.03, 1);
+    const ease = 1 - Math.pow(1 - camLerpT, 3);
+    camera.position.lerpVectors(camLerpFrom, targetCamPos, ease);
+    lookTarget.lerpVectors(camLerpFromLook, targetLookAt, ease);
+    // Update spherical from new position for seamless handoff
+    const rel = camera.position.clone().sub(lookTarget);
+    spherical.r = rel.length();
+    spherical.phi = Math.acos(rel.y / spherical.r);
+    spherical.theta = Math.atan2(rel.z, rel.x);
+    if (camLerpT >= 1) camLerping = false;
+  } else if (currentView !== 'chase') {
+    // Orbit camera around look target
+    const sinPhi = Math.sin(spherical.phi);
+    camera.position.set(
+      lookTarget.x + spherical.r * sinPhi * Math.cos(spherical.theta),
+      lookTarget.y + spherical.r * Math.cos(spherical.phi),
+      lookTarget.z + spherical.r * sinPhi * Math.sin(spherical.theta)
+    );
+  }
+
+  camera.lookAt(lookTarget);
+  renderer.render(scene, camera);
+}
+animate3d();
+
+})();
 </script>
 </body>
 </html>
