@@ -412,25 +412,25 @@ const FEED=[
   {o:6.0, msg:'Free-return trajectory locked — coasting homeward'},
 ];
 
-/* ── HORIZONS DATA via data.json (written by GitHub Actions) ── */
-// GitHub Actions fetches JPL Horizons every 5 min server-side (no CORS issue)
-// and commits data.json to this repo. We just read that file directly.
+/* ── HORIZONS DATA via Cloudflare Worker ──────────────── */
+// Worker fetches JPL Horizons on every request, caches 60s at the edge
+// Replace WORKER_URL below with your deployed worker URL after setup
 let horizonsCache = null;
 let lastFetch = 0;
-const DATA_URL = './data.json';
+const WORKER_URL = 'https://artemis-telemetry.induwaradahamjith2004.workers.dev/';
 
 async function fetchHorizons() {
   const now = Date.now();
-  if (horizonsCache && now - lastFetch < 300000) return horizonsCache;
+  // Keep a local 60s cache to match the Worker's edge cache TTL
+  if (horizonsCache && now - lastFetch < 60000) return horizonsCache;
   setSrcBadge('loading');
   try {
-    // Cache-bust bucket matches the 5-min Action schedule
-    const url = `${DATA_URL}?t=${Math.floor(now / 300000)}`;
     const timeout = new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 10000));
-    const resp = await Promise.race([fetch(url), timeout]);
+    const resp = await Promise.race([fetch(WORKER_URL), timeout]);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
-    if (!data.rg || !data.vx) throw new Error('invalid data.json');
+    if (data.error) throw new Error(data.error);
+    if (!data.rg || !data.vx) throw new Error('invalid response');
     horizonsCache = {
       x: data.x, y: data.y, z: data.z,
       vx: data.vx, vy: data.vy, vz: data.vz,
@@ -443,7 +443,7 @@ async function fetchHorizons() {
     setSrcBadge('api');
     return horizonsCache;
   } catch(err) {
-    console.warn('data.json fetch failed:', err.message);
+    console.warn('Worker fetch failed:', err.message);
     setSrcBadge('err');
     return null;
   }
@@ -481,7 +481,7 @@ function computeMoonDistFromPos(sx, sy, sz, utcMs) {
 function setSrcBadge(type, secsUntilRefresh) {
   const badges = [document.getElementById('data-src-badge'), document.getElementById('telem-src')];
   const configs = {
-    api:     { cls:'src-api',     text: secsUntilRefresh ? `● HORIZONS · refresh in ${secsUntilRefresh}s` : '● JPL HORIZONS (via GH Actions)' },
+    api:     { cls:'src-api',     text: secsUntilRefresh ? `● HORIZONS · refresh in ${secsUntilRefresh}s` : '● JPL HORIZONS (Cloudflare Worker)' },
     err:     { cls:'src-err',     text:'✕ API UNAVAILABLE'  },
     loading: { cls:'src-loading', text:'⟳ FETCHING API'     },
   };
@@ -560,7 +560,7 @@ function update(){
 
   // Update source badge with refresh countdown
   if (liveData) {
-    const secsLeft = Math.max(0, Math.round((300000 - (Date.now() - lastFetch)) / 1000));
+    const secsLeft = Math.max(0, Math.round((60000 - (Date.now() - lastFetch)) / 1000));
     setSrcBadge('api', secsLeft);
   }
 
@@ -629,8 +629,8 @@ function openLink(url){window.open(url,'_blank','noopener');}
 /* ── BOOT ────────────────────────────────────────────── */
 // Initial API fetch
 refreshAPI();
-// Refresh API every 5 minutes
-setInterval(refreshAPI, 300000);
+// Refresh from Worker every 60 seconds (matches edge cache TTL)
+setInterval(refreshAPI, 60000);
 
 // UI update every second
 update();
