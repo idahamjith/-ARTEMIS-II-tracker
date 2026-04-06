@@ -310,30 +310,114 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 <div class="card traj">
   <div class="clbl"><span class="clbl-line"></span>Cislunar Trajectory — Figure-8 Free Return</div>
   <div class="traj-wrap">
-    <svg width="100%" viewBox="0 0 680 175" xmlns="http://www.w3.org/2000/svg">
+    <!--
+      Figure-8 Free-Return geometry (viewBox 0 0 700 200):
+      Earth  cx=85   cy=100   Moon cx=615  cy=100
+      The classic Apollo free-return traces a figure-8:
+        • Outbound (upper arc): leaves Earth, arcs ABOVE midline, wraps around Moon's far side
+        • Return  (lower arc): swings BELOW midline back to Earth
+      Crossover point near Moon (~x=540, y=100) creates the figure-8 intersection.
+    -->
+    <svg width="100%" viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="eg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#1D9E75" stop-opacity=".65"/><stop offset="70%" stop-color="#1D9E75" stop-opacity=".08"/><stop offset="100%" stop-color="#1D9E75" stop-opacity="0"/></radialGradient>
-        <radialGradient id="mg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#9ca3b0" stop-opacity=".55"/><stop offset="70%" stop-color="#9ca3b0" stop-opacity=".06"/><stop offset="100%" stop-color="#9ca3b0" stop-opacity="0"/></radialGradient>
+        <radialGradient id="eg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#1D9E75" stop-opacity=".7"/>
+          <stop offset="65%"  stop-color="#1D9E75" stop-opacity=".1"/>
+          <stop offset="100%" stop-color="#1D9E75" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="mg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#9ca3b0" stop-opacity=".6"/>
+          <stop offset="65%"  stop-color="#9ca3b0" stop-opacity=".07"/>
+          <stop offset="100%" stop-color="#9ca3b0" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Gradient along outbound leg: blue → cyan -->
+        <linearGradient id="out-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#4f8eff" stop-opacity=".9"/>
+          <stop offset="100%" stop-color="#2de3c4" stop-opacity=".7"/>
+        </linearGradient>
+        <!-- Gradient along return leg: gold → blue -->
+        <linearGradient id="ret-grad" x1="100%" y1="0%" x2="0%" y2="0%">
+          <stop offset="0%"   stop-color="#f5b942" stop-opacity=".8"/>
+          <stop offset="100%" stop-color="#4f8eff" stop-opacity=".9"/>
+        </linearGradient>
+        <!-- Arrow markers -->
+        <marker id="arr-out" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0 0 L6 3 L0 6 Z" fill="#2de3c4" opacity=".8"/>
+        </marker>
+        <marker id="arr-ret" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0 0 L6 3 L0 6 Z" fill="#f5b942" opacity=".8"/>
+        </marker>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
-      <circle cx="78" cy="88" r="40" fill="url(#eg)"/>
-      <circle cx="78" cy="88" r="19" fill="#1D9E75" opacity=".75"/>
-      <circle cx="78" cy="88" r="12" fill="#2bc890"/>
-      <text x="78" y="124" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(160,185,230,.5)">Earth</text>
-      <circle cx="608" cy="88" r="36" fill="url(#mg)"/>
-      <circle cx="608" cy="88" r="17" fill="#8e939f" opacity=".7"/>
-      <circle cx="608" cy="88" r="10" fill="#b0b4bf"/>
-      <text x="608" y="124" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(160,185,230,.5)">Moon</text>
-      <path d="M96 88 C158 22,328 8,470 60 C538 84,606 89,607 79 C606 66,558 46,474 63 C378 86,258 140,198 162 C156 176,97 162,96 88" fill="none" stroke="rgba(79,142,255,.2)" stroke-width="1.5" stroke-dasharray="5 4"/>
-      <g id="orion-g" transform="translate(300,30)">
-        <circle r="11" fill="#4f8eff" opacity=".2"><animate attributeName="r" values="11;16;11" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".2;0;.2" dur="2.2s" repeatCount="indefinite"/></circle>
-        <circle r="5" fill="#4f8eff"/>
-        <text text-anchor="middle" dy="-12" font-family="Space Mono,monospace" font-size="9" fill="#7eb3ff" font-weight="700">ORION</text>
+
+      <!-- ── EARTH ── -->
+      <circle cx="85" cy="100" r="48" fill="url(#eg)"/>
+      <circle cx="85" cy="100" r="22" fill="#1D9E75" opacity=".75"/>
+      <circle cx="85" cy="100" r="14" fill="#2bc890"/>
+      <text x="85" y="152" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(160,185,230,.55)" font-weight="600">Earth</text>
+
+      <!-- ── MOON ── -->
+      <circle cx="615" cy="100" r="42" fill="url(#mg)"/>
+      <circle cx="615" cy="100" r="19" fill="#8e939f" opacity=".72"/>
+      <circle cx="615" cy="100" r="11" fill="#b0b4bf"/>
+      <text x="615" y="152" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="10" fill="rgba(160,185,230,.55)" font-weight="600">Moon</text>
+
+      <!-- ── OUTBOUND ARC (upper): Earth → Moon far-side loop ──
+           Leaves Earth at ~(105,100), arcs high (peaks ~y=18), sweeps around Moon,
+           crosses the midline near (545,100) heading south, curves around Moon's near side,
+           returns to crossing point — completing the Moon loop half of the figure-8.
+           Path: start at Earth right, curve up and across, wrap tightly around Moon,
+           arrive at crossover from the south side.
+      -->
+      <!-- Outbound leg: Earth → flyby approach (upper arc, blue-cyan) -->
+      <path id="outbound-path"
+        d="M104 100 C140 40, 280 14, 420 28 C490 36, 545 65, 575 82"
+        fill="none" stroke="url(#out-grad)" stroke-width="1.8"
+        marker-end="url(#arr-out)"/>
+
+      <!-- Moon loop — wraps around Moon's far side (right side of SVG) -->
+      <path
+        d="M575 82 C598 94, 640 100, 648 100 C648 100, 640 100, 622 96 C604 90, 590 105, 575 118"
+        fill="none" stroke="rgba(45,227,196,.5)" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+      <!-- ── RETURN ARC (lower): Moon → Earth ──
+           From crossover point, sweeps below midline, arcs down, returns to Earth.
+      -->
+      <path id="return-path"
+        d="M575 118 C545 135, 490 164, 420 172 C280 186, 140 160, 104 100"
+        fill="none" stroke="url(#ret-grad)" stroke-width="1.8"
+        marker-end="url(#arr-ret)"/>
+
+      <!-- Crossover / figure-8 intersection marker -->
+      <circle cx="575" cy="100" r="3.5" fill="rgba(255,255,255,.25)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+
+      <!-- ── FLYBY CALLOUT ── -->
+      <line x1="622" y1="85" x2="590" y2="55" stroke="rgba(160,185,230,.3)" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="588" y="51" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.5)">~6,513 km</text>
+      <text x="588" y="62" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.5)">flyby</text>
+
+      <!-- Direction labels -->
+      <text x="310" y="13" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(45,227,196,.6)" letter-spacing="0.04em">OUTBOUND  (Days 1–6)</text>
+      <text x="310" y="193" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(245,185,66,.6)" letter-spacing="0.04em">RETURN  (Days 6–10)</text>
+
+      <!-- ── ORION DOT (animated, moveable by JS) ── -->
+      <g id="orion-g" transform="translate(250,28)">
+        <circle r="13" fill="#4f8eff" opacity=".18">
+          <animate attributeName="r" values="13;19;13" dur="2.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".18;0;.18" dur="2.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="5.5" fill="#4f8eff" filter="url(#glow)"/>
+        <text text-anchor="middle" dy="-13" font-family="Space Mono,monospace" font-size="9" fill="#7eb3ff" font-weight="700">ORION</text>
       </g>
-      <text x="597" y="52" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.45)">~6,513 km flyby</text>
-      <line x1="290" y1="168" x2="326" y2="168" stroke="rgba(79,142,255,.28)" stroke-width="1.5" stroke-dasharray="4 3"/>
-      <text x="331" y="171" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.4)">Free-return path</text>
-      <circle cx="445" cy="168" r="4" fill="#4f8eff"/>
-      <text x="453" y="171" font-family="Space Grotesk,sans-serif" font-size="9" fill="rgba(160,185,230,.4)">Orion (est.)</text>
+
+      <!-- ── LEGEND ── -->
+      <line x1="10" y1="186" x2="34" y2="186" stroke="rgba(79,142,255,.7)" stroke-width="1.8"/>
+      <text x="37" y="189" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(160,185,230,.45)">Free-return path</text>
+      <circle cx="154" cy="186" r="4" fill="#4f8eff"/>
+      <text x="161" y="189" font-family="Space Grotesk,sans-serif" font-size="8.5" fill="rgba(160,185,230,.45)">Orion (est.)</text>
     </svg>
   </div>
 </div>
@@ -496,8 +580,8 @@ function setSrcBadge(type, secsUntilRefresh) {
 // We project Orion's ECI (x,y) onto SVG space using this scale,
 // clamped to stay within the visible canvas.
 
-const SVG_EARTH = { x: 78,  y: 88 };
-const SVG_MOON  = { x: 608, y: 88 };
+const SVG_EARTH = { x: 85,  y: 100 };
+const SVG_MOON  = { x: 615, y: 100 };
 const SVG_SPAN  = SVG_MOON.x - SVG_EARTH.x;  // 530 px
 const REAL_EM   = 384400;                      // km — average Earth-Moon distance
 const KM_PER_PX = REAL_EM / SVG_SPAN;         // ~725 km per SVG pixel
@@ -517,17 +601,18 @@ function orionSVGPos(liveData) {
 
   // Clamp to safe canvas area so dot never leaves the SVG
   return {
-    x: Math.max(20,  Math.min(660, svgX)),
-    y: Math.max(15,  Math.min(160, svgY)),
+    x: Math.max(25,  Math.min(680, svgX)),
+    y: Math.max(18,  Math.min(182, svgY)),
   };
 }
 
 // Fallback path used only when API data is unavailable
 const OPATH=[
-  {t:0,x:96,y:88},{t:.13,x:172,y:38},{t:.27,x:278,y:22},{t:.42,x:390,y:47},
-  {t:.54,x:474,y:70},{t:.6,x:582,y:86},{t:.65,x:607,y:79},
-  {t:.7,x:556,y:50},{t:.76,x:476,y:65},{t:.84,x:355,y:108},
-  {t:.91,x:228,y:153},{t:.96,x:142,y:170},{t:1,x:96,y:88},
+  {t:0,   x:104, y:100},{t:.10, x:160, y:58},{t:.22, x:260, y:26},{t:.35, x:370, y:28},
+  {t:.47, x:460, y:50}, {t:.55, x:530, y:72},{t:.60, x:575, y:82},
+  {t:.65, x:648, y:100},{t:.68, x:620, y:96},{t:.72, x:590, y:105},{t:.75, x:575, y:118},
+  {t:.82, x:490, y:148},{t:.88, x:390, y:168},{t:.93, x:280, y:178},
+  {t:.97, x:170, y:162},{t:1,   x:104, y:100},
 ];
 function lerpOrion(p){
   for(let i=0;i<OPATH.length-1;i++){
