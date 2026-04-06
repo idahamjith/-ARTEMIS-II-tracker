@@ -417,7 +417,7 @@ const FEED=[
 // Replace WORKER_URL below with your deployed worker URL after setup
 let horizonsCache = null;
 let lastFetch = 0;
-const WORKER_URL = 'https://artemis-telemetry.induwaradahamjith2004.workers.dev/';
+const WORKER_URL = 'https://artemis-telemetry.induwaradahamjith2004.workers.dev';
 
 async function fetchHorizons() {
   const now = Date.now();
@@ -489,7 +489,40 @@ function setSrcBadge(type, secsUntilRefresh) {
   badges.forEach(b => { if(b){ b.className='src-badge '+cfg.cls; b.textContent=cfg.text; }});
 }
 
-/* ── ORION PATH (for SVG trajectory dot) ─────────────── */
+/* ── ORION SVG POSITION from real ECI coordinates ─────── */
+// SVG canvas: viewBox "0 0 680 175"
+// Earth center = SVG (78, 88), Moon center = SVG (608, 88)
+// SVG Earth-Moon span = 530px, real Earth-Moon avg = 384400 km
+// We project Orion's ECI (x,y) onto SVG space using this scale,
+// clamped to stay within the visible canvas.
+
+const SVG_EARTH = { x: 78,  y: 88 };
+const SVG_MOON  = { x: 608, y: 88 };
+const SVG_SPAN  = SVG_MOON.x - SVG_EARTH.x;  // 530 px
+const REAL_EM   = 384400;                      // km — average Earth-Moon distance
+const KM_PER_PX = REAL_EM / SVG_SPAN;         // ~725 km per SVG pixel
+
+function orionSVGPos(liveData) {
+  if (!liveData) return null;
+
+  // Propagate position forward from last fetch
+  const dt = (Date.now() - liveData.fetchedAt) / 1000;
+  const ex = liveData.x + liveData.vx * dt;
+  const ey = liveData.y + liveData.vy * dt;
+  // ez ignored — we project onto the ecliptic plane (x/y)
+
+  // Scale ECI km → SVG pixels, origin = Earth center
+  const svgX = SVG_EARTH.x + (ex / KM_PER_PX);
+  const svgY = SVG_EARTH.y - (ey / KM_PER_PX); // y-axis flipped in SVG
+
+  // Clamp to safe canvas area so dot never leaves the SVG
+  return {
+    x: Math.max(20,  Math.min(660, svgX)),
+    y: Math.max(15,  Math.min(160, svgY)),
+  };
+}
+
+// Fallback path used only when API data is unavailable
 const OPATH=[
   {t:0,x:96,y:88},{t:.13,x:172,y:38},{t:.27,x:278,y:22},{t:.42,x:390,y:47},
   {t:.54,x:474,y:70},{t:.6,x:582,y:86},{t:.65,x:607,y:79},
@@ -599,8 +632,8 @@ function update(){
     document.getElementById('spd-sub').textContent = '';
   }
 
-  // Orion dot on trajectory
-  const pos=lerpOrion(prog);
+  // Orion dot — use real ECI projection when API data available, else fallback path
+  const pos = orionSVGPos(liveData) || lerpOrion(prog);
   document.getElementById('orion-g').setAttribute('transform',`translate(${pos.x},${pos.y})`);
 
   renderFeed(days);
