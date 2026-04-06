@@ -470,8 +470,27 @@ refreshAPI();setInterval(refreshAPI,60000);update();setInterval(update,1000);
 </script>
 
 <!-- ══ THREE.JS ══ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="document.getElementById('loading').innerHTML='<div style=\'color:#ff4f4f;font-family:monospace;font-size:12px;text-align:center\'>⚠ 3D engine failed to load.<br>Check your internet connection.</div>';"></script>
 <script>
+function loadThree(src, fallback) {
+  var s = document.createElement('script');
+  s.src = src;
+  s.onload = function(){ init3D(); };
+  s.onerror = function(){
+    if(fallback){
+      loadThree(fallback, null);
+    } else {
+      document.getElementById('loading').innerHTML = '<div style="color:#ff4f4f;font-family:monospace;font-size:12px;text-align:center;padding:20px">⚠ 3D engine failed to load.<br>Check your internet connection.</div>';
+    }
+  };
+  document.head.appendChild(s);
+}
+loadThree(
+  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+  'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js'
+);
+</script>
+<script>
+function init3D(){
 (function(){
 'use strict';
 
@@ -685,6 +704,7 @@ function doLoad(){
 setTimeout(doLoad, 1500);
 (function boot(){requestAnimationFrame(doLoad);})();
 })();
+} // end init3D
 </script>
 </body>
 </html>
