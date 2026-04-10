@@ -19,7 +19,7 @@
 html,body{height:100%;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.shell{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto auto auto;gap:8px;padding:10px;min-height:100vh;}
+.shell{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto auto auto auto;gap:8px;padding:10px;min-height:100vh;}
 /* HEADER */
 .hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px 16px;background:rgba(8,12,26,.92);border:.5px solid var(--border2);border-radius:12px;backdrop-filter:blur(16px);}
 .hdr-left{display:flex;align-items:center;gap:14px;}
@@ -51,7 +51,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .cn{font-size:13px;font-weight:600;}
 .cr{font-size:10px;color:var(--text2);margin-top:2px;line-height:1.4;}
 /* MET */
-.met{grid-column:1/3;display:flex;gap:14px;align-items:stretch;}
+.met{grid-column:1/3;grid-row:2;display:flex;gap:14px;align-items:stretch;}
 .met-main{flex:1;}
 .segs{display:flex;gap:7px;align-items:flex-end;margin-top:2px;}
 .seg-n{font-family:var(--mono);font-size:38px;font-weight:700;color:var(--text);line-height:1;background:var(--surface);border:.5px solid var(--border2);border-radius:8px;padding:5px 10px;min-width:68px;display:block;letter-spacing:.03em;}
@@ -68,7 +68,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .p-earth{background:rgba(61,232,158,.12);color:var(--green);border:.5px solid rgba(61,232,158,.3);}
 .p-return{background:rgba(245,185,66,.12);color:var(--gold);border:.5px solid rgba(245,185,66,.3);}
 /* TELEMETRY */
-.telem{grid-column:3;}
+.telem{grid-column:3;grid-row:2;}
 .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
 .ti-lbl{font-size:9px;color:var(--text2);letter-spacing:.08em;margin-bottom:3px;}
 .ti-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text);line-height:1.1;}
@@ -77,7 +77,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .ti-val.cgn{color:var(--green);}
 .ti-sub{font-size:9px;color:var(--text2);margin-top:2px;}
 /* VIDEO */
-.video-card{grid-column:1;grid-row:4/6;display:flex;flex-direction:column;min-height:380px;}
+.video-card{grid-column:1;grid-row:5/7;display:flex;flex-direction:column;min-height:380px;}
 .vwrap{flex:1;position:relative;min-height:190px;border-radius:8px;overflow:hidden;background:#000;margin-top:6px;}
 .vwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 .vtabs{display:flex;gap:6px;margin-top:8px;}
@@ -121,7 +121,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* ── TABLET ≤860px ── */
 @media(max-width:860px){
   .shell{grid-template-columns:1fr 1fr;gap:7px;padding:8px;}
-  .hdr,.met,.crew-row,.telem,.video-card,.traj,.feed,.tline{grid-column:1/-1;grid-row:auto;}
+  .hdr,.met,.crew-row,.telem,.video-card,.traj,.feed,.tline,.dsn-panel,.donki-panel{grid-column:1/-1;grid-row:auto;}
   .met{flex-direction:column;gap:10px;}
   .met-side{flex-direction:row;flex-wrap:wrap;border-left:none;border-top:.5px solid var(--border);padding-left:0;padding-top:10px;gap:16px;}
   .feed,.tline{grid-column:1/-1;}
@@ -184,6 +184,52 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   /* Source badge in header — hide on very small */
   #data-src-badge{display:none;}
 }
+
+/* DSN PANEL */
+.dsn-panel{grid-column:2;grid-row:3;}
+.dsn-dish-row{display:flex;gap:10px;align-items:flex-start;margin-top:4px;}
+.dsn-dish-icon{width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.dsn-dish-icon svg{width:100%;height:100%;}
+.dsn-dish-info{flex:1;min-width:0;}
+.dsn-dish-name{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dsn-dish-site{font-size:9px;color:var(--text2);letter-spacing:.07em;margin-top:1px;}
+.dsn-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.dsn-bar-item{background:var(--surface2);border-radius:8px;padding:7px 9px;}
+.dsn-bar-lbl{font-size:8px;color:var(--text2);letter-spacing:.09em;margin-bottom:4px;}
+.dsn-bar-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);}
+.dsn-bar-track{height:2px;background:rgba(255,255,255,.08);border-radius:1px;margin-top:4px;overflow:hidden;}
+.dsn-bar-fill{height:100%;border-radius:1px;transition:width .8s ease;}
+.dsn-bar-fill.up{background:linear-gradient(90deg,var(--teal),#4f8eff);}
+.dsn-bar-fill.dn{background:linear-gradient(90deg,var(--gold),var(--teal));}
+.dsn-status-row{display:flex;align-items:center;gap:7px;margin-top:8px;}
+.dsn-freq{font-size:9px;color:var(--text2);}
+.dsn-lock{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:2px 8px;border-radius:999px;}
+.dsn-lock.locked{background:rgba(61,232,158,.12);color:var(--green);border:.5px solid rgba(61,232,158,.3);}
+.dsn-lock.searching{background:rgba(245,185,66,.1);color:var(--gold);border:.5px solid rgba(245,185,66,.3);}
+.dsn-lock.offline{background:rgba(255,79,79,.08);color:var(--red);border:.5px solid rgba(255,79,79,.25);}
+.dsn-countdown{font-size:9px;color:var(--text2);margin-left:auto;}
+
+/* DONKI / SPACE WEATHER PANEL */
+.donki-panel{grid-column:3;grid-row:3;}
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.sw-item{background:var(--surface2);border-radius:8px;padding:8px 10px;position:relative;}
+.sw-lbl{font-size:8px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.sw-val{font-family:var(--mono);font-size:15px;font-weight:700;}
+.sw-val.ok{color:var(--green);}
+.sw-val.warn{color:var(--gold);}
+.sw-val.alert{color:var(--red);}
+.sw-sub{font-size:8px;color:var(--text2);margin-top:2px;line-height:1.3;}
+.sw-badge{display:inline-flex;align-items:center;gap:4px;font-size:8px;font-weight:700;letter-spacing:.07em;padding:2px 6px;border-radius:999px;margin-top:4px;}
+.sw-badge.green{background:rgba(61,232,158,.12);color:var(--green);border:.5px solid rgba(61,232,158,.3);}
+.sw-badge.gold{background:rgba(245,185,66,.1);color:var(--gold);border:.5px solid rgba(245,185,66,.3);}
+.sw-badge.red{background:rgba(255,79,79,.1);color:var(--red);border:.5px solid rgba(255,79,79,.3);}
+.sw-events{margin-top:8px;}
+.sw-event-item{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:.5px solid var(--border);}
+.sw-event-item:last-child{border-bottom:none;}
+.sw-event-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.sw-event-text{font-size:10px;color:var(--text);line-height:1.4;}
+.sw-event-time{font-size:8px;color:var(--text2);font-family:var(--mono);}
+.sw-event-sub{font-size:9px;color:var(--text2);}
 
 /* ── VERY SMALL ≤360px ── */
 @media(max-width:360px){
@@ -278,6 +324,74 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div><div class="ti-lbl">DIST FROM MOON</div><div class="ti-val cg" id="dm">—</div><div class="ti-sub" id="dm-sub">Avg: 384,400 km</div></div>
     <div><div class="ti-lbl">SPEED (radial)</div><div class="ti-val" id="spd">—</div><div class="ti-sub" id="spd-sub">Free-return trajectory</div></div>
     <div><div class="ti-lbl">SIGNAL DELAY</div><div class="ti-val cgn" id="sig">—</div><div class="ti-sub">Earth ↔ Orion</div></div>
+  </div>
+</div>
+
+<!-- DSN TRACKING -->
+<div class="card dsn-panel">
+  <div class="clbl"><span class="clbl-line"></span>Deep Space Network &nbsp;<span id="dsn-src" class="src-badge src-loading" style="font-size:8px;">⟳ CONNECTING</span></div>
+  <div id="dsn-body">
+    <div class="dsn-dish-row">
+      <div class="dsn-dish-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 8 Q10 18 18 28 Q26 18 18 8Z" fill="rgba(45,227,196,.15)" stroke="rgba(45,227,196,.5)" stroke-width="1.2"/>
+          <line x1="18" y1="28" x2="18" y2="33" stroke="rgba(160,185,230,.4)" stroke-width="1.5"/>
+          <line x1="12" y1="33" x2="24" y2="33" stroke="rgba(160,185,230,.4)" stroke-width="1.5"/>
+          <circle cx="18" cy="8" r="2.5" fill="var(--teal)" opacity=".8"/>
+        </svg>
+      </div>
+      <div class="dsn-dish-info">
+        <div class="dsn-dish-name" id="dsn-dish-name">— — —</div>
+        <div class="dsn-dish-site" id="dsn-dish-site">Awaiting DSN contact…</div>
+      </div>
+      <div class="dsn-countdown" id="dsn-refresh">—</div>
+    </div>
+    <div class="dsn-bars">
+      <div class="dsn-bar-item">
+        <div class="dsn-bar-lbl">UPLINK</div>
+        <div class="dsn-bar-val" id="dsn-up">—</div>
+        <div class="dsn-bar-track"><div class="dsn-bar-fill up" id="dsn-up-bar" style="width:0%"></div></div>
+      </div>
+      <div class="dsn-bar-item">
+        <div class="dsn-bar-lbl">DOWNLINK</div>
+        <div class="dsn-bar-val" id="dsn-dn">—</div>
+        <div class="dsn-bar-track"><div class="dsn-bar-fill dn" id="dsn-dn-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="dsn-status-row">
+      <div class="dsn-lock offline" id="dsn-lock">⬤ SCANNING</div>
+      <div class="dsn-freq" id="dsn-freq"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SPACE WEATHER (DONKI) -->
+<div class="card donki-panel">
+  <div class="clbl"><span class="clbl-line"></span>Space Weather &nbsp;<span id="donki-src" class="src-badge src-loading" style="font-size:8px;">⟳ CONNECTING</span></div>
+  <div class="sw-grid">
+    <div class="sw-item">
+      <div class="sw-lbl">SOLAR FLARES</div>
+      <div class="sw-val ok" id="sw-flares">—</div>
+      <div class="sw-sub" id="sw-flares-sub">Checking…</div>
+    </div>
+    <div class="sw-item">
+      <div class="sw-lbl">CME ALERTS</div>
+      <div class="sw-val ok" id="sw-cme">—</div>
+      <div class="sw-sub" id="sw-cme-sub">Checking…</div>
+    </div>
+    <div class="sw-item">
+      <div class="sw-lbl">RADIATION BELT</div>
+      <div class="sw-val ok" id="sw-rad">—</div>
+      <div class="sw-sub" id="sw-rad-sub">SEP monitoring</div>
+    </div>
+    <div class="sw-item">
+      <div class="sw-lbl">GEO STORM</div>
+      <div class="sw-val ok" id="sw-geo">—</div>
+      <div class="sw-sub" id="sw-geo-sub">Kp index</div>
+    </div>
+  </div>
+  <div class="sw-events" id="sw-events-list">
+    <div class="sw-event-item"><div class="sw-event-text" style="color:var(--text2)">Loading space weather events…</div></div>
   </div>
 </div>
 
@@ -423,7 +537,7 @@ const FEED=[
 // Replace WORKER_URL below with your deployed worker URL after setup
 let horizonsCache = null;
 let lastFetch = 0;
-const WORKER_URL = 'https://artemis-telemetry.induwaradahamjith2004.workers.dev/';
+const WORKER_URL = 'https://artemis-telemetry.induwaradahamjith2004.workers.dev';
 
 async function fetchHorizons() {
   const now = Date.now();
@@ -661,11 +775,256 @@ function setFeed(k){
 
 function openLink(url){window.open(url,'_blank','noopener');}
 
+/* ── DSN NOW ──────────────────────────────────────────── */
+// NASA DSN Now XML — updates every 5s, fully public, no CORS issues via allorigins proxy
+let dsnLastFetch = 0;
+let dsnRefreshIn  = 0;
+const DSN_PROXY = 'https://api.allorigins.win/raw?url=https://eyes.nasa.gov/dsn/data/dsn.xml';
+
+const DSN_SITES = {
+  gdscc: 'Goldstone, CA · USA',
+  mdscc: 'Madrid · Spain',
+  cdscc: 'Canberra · Australia',
+};
+
+function parseDSN(xml) {
+  const parser = new DOMParser();
+  const doc    = parser.parseFromString(xml, 'text/xml');
+
+  // Find dish tracking Orion / Artemis II (spacecraft ID or name)
+  const dishes = Array.from(doc.querySelectorAll('dish'));
+  let target   = null;
+
+  for (const dish of dishes) {
+    const targets = dish.querySelectorAll('target');
+    for (const t of targets) {
+      const name = (t.getAttribute('name') || '').toLowerCase();
+      const id   = (t.getAttribute('id')   || '');
+      if (name.includes('orion') || name.includes('artemis') || id === '-1024') {
+        target = { dish, tNode: t };
+        break;
+      }
+    }
+    if (target) break;
+  }
+
+  // Fallback: pick the most active dish (highest downlink rate)
+  if (!target && dishes.length) {
+    let best = null, bestRate = -1;
+    for (const dish of dishes) {
+      const dn = dish.querySelector('downSignal');
+      if (dn) {
+        const rate = parseFloat(dn.getAttribute('dataRate') || '0');
+        if (rate > bestRate) { bestRate = rate; best = dish; }
+      }
+    }
+    if (best) target = { dish: best, tNode: null };
+  }
+
+  if (!target) return null;
+
+  const { dish } = target;
+  const name = dish.getAttribute('name') || '—';
+  const site = DSN_SITES[(dish.getAttribute('site') || '').toLowerCase()] || dish.getAttribute('site') || '—';
+
+  const upSig   = dish.querySelector('upSignal');
+  const dnSig   = dish.querySelector('downSignal');
+  const upRate  = upSig  ? parseFloat(upSig.getAttribute('dataRate')  || '0') : 0;
+  const dnRate  = dnSig  ? parseFloat(dnSig.getAttribute('dataRate')  || '0') : 0;
+  const freq    = dnSig  ? dnSig.getAttribute('frequency') : null;
+  const band    = dnSig  ? (dnSig.getAttribute('band') || '').toUpperCase() : '';
+  const power   = upSig  ? parseFloat(upSig.getAttribute('power') || '0') : 0;
+
+  return { name, site, upRate, dnRate, freq, band, power };
+}
+
+function fmtRate(bps) {
+  if (!bps || bps <= 0) return '— bps';
+  if (bps < 1000) return bps.toFixed(0) + ' bps';
+  if (bps < 1e6)  return (bps/1000).toFixed(1) + ' kbps';
+  return (bps/1e6).toFixed(2) + ' Mbps';
+}
+
+function updateDSNUI(data) {
+  if (!data) {
+    document.getElementById('dsn-dish-name').textContent = '— NO CONTACT —';
+    document.getElementById('dsn-dish-site').textContent = 'No active link to Orion detected';
+    document.getElementById('dsn-lock').className = 'dsn-lock offline';
+    document.getElementById('dsn-lock').textContent = '⬤ OFFLINE';
+    document.getElementById('dsn-src').className = 'src-badge src-err';
+    document.getElementById('dsn-src').textContent = '✕ NO DATA';
+    return;
+  }
+
+  document.getElementById('dsn-dish-name').textContent = data.name;
+  document.getElementById('dsn-dish-site').textContent  = data.site;
+  document.getElementById('dsn-up').textContent = fmtRate(data.upRate);
+  document.getElementById('dsn-dn').textContent = fmtRate(data.dnRate);
+
+  // Normalize bar widths — typical Orion downlink ~2 kbps, uplink ~1 kbps
+  const upPct = Math.min(100, (data.upRate / 2000) * 100);
+  const dnPct = Math.min(100, (data.dnRate / 2000) * 100);
+  document.getElementById('dsn-up-bar').style.width = upPct + '%';
+  document.getElementById('dsn-dn-bar').style.width = dnPct + '%';
+
+  const hasLink = data.dnRate > 0 || data.upRate > 0;
+  const lock    = document.getElementById('dsn-lock');
+  lock.textContent  = hasLink ? '⬤ LOCKED' : '⬤ SEARCHING';
+  lock.className    = 'dsn-lock ' + (hasLink ? 'locked' : 'searching');
+
+  if (data.freq && data.band) {
+    const ghz = (parseFloat(data.freq)/1e9).toFixed(4);
+    document.getElementById('dsn-freq').textContent = `${data.band}-band · ${ghz} GHz`;
+  } else if (data.band) {
+    document.getElementById('dsn-freq').textContent = `${data.band}-band`;
+  }
+
+  document.getElementById('dsn-src').className  = 'src-badge src-api';
+  document.getElementById('dsn-src').textContent = '● DSN NOW';
+}
+
+async function fetchDSN() {
+  try {
+    const res = await fetch(DSN_PROXY + '&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const xml = await res.text();
+    const data = parseDSN(xml);
+    dsnLastFetch = Date.now();
+    dsnRefreshIn = 10;
+    updateDSNUI(data);
+  } catch(e) {
+    console.warn('DSN fetch failed:', e.message);
+    document.getElementById('dsn-src').className  = 'src-badge src-err';
+    document.getElementById('dsn-src').textContent = '✕ DSN UNAVAILABLE';
+  }
+}
+
+// Tick DSN countdown every second
+function tickDSN() {
+  if (dsnRefreshIn > 0) dsnRefreshIn--;
+  if (dsnRefreshIn <= 0) fetchDSN();
+  document.getElementById('dsn-refresh').textContent = 'refresh in ' + dsnRefreshIn + 's';
+}
+
+/* ── NASA DONKI (Space Weather) ───────────────────────── */
+// DEMO_KEY works for low-volume use; user can swap in their own key from api.nasa.gov
+const DONKI_KEY = 'DEMO_KEY';
+let donkiLastFetch = 0;
+
+function donkiDateRange() {
+  // Always fetch last 7 days around the mission window
+  const end   = new Date();
+  const start = new Date(Date.now() - 7 * 86400000);
+  const fmt   = d => d.toISOString().slice(0,10);
+  return { start: fmt(start), end: fmt(end) };
+}
+
+async function fetchDONKI() {
+  const { start, end } = donkiDateRange();
+  const base = `https://api.nasa.gov/DONKI`;
+  const qs   = `startDate=${start}&endDate=${end}&api_key=${DONKI_KEY}`;
+
+  try {
+    const [flrRes, cmeRes, sepRes, gstRes] = await Promise.allSettled([
+      fetch(`${base}/FLR?${qs}`).then(r => r.json()),
+      fetch(`${base}/CMEAnalysis?${qs}&mostAccurateOnly=true`).then(r => r.json()),
+      fetch(`${base}/SEP?${qs}`).then(r => r.json()),
+      fetch(`${base}/GST?${qs}`).then(r => r.json()),
+    ]);
+
+    const flares = flrRes.status === 'fulfilled' && Array.isArray(flrRes.value) ? flrRes.value : [];
+    const cmes   = cmeRes.status === 'fulfilled' && Array.isArray(cmeRes.value) ? cmeRes.value : [];
+    const seps   = sepRes.status === 'fulfilled' && Array.isArray(sepRes.value) ? sepRes.value : [];
+    const gsts   = gstRes.status === 'fulfilled' && Array.isArray(gstRes.value) ? gstRes.value : [];
+
+    // Flares: count by class
+    const xFlares = flares.filter(f => (f.classType||'').startsWith('X')).length;
+    const mFlares = flares.filter(f => (f.classType||'').startsWith('M')).length;
+    const flareLvl = xFlares > 0 ? 'alert' : mFlares > 0 ? 'warn' : 'ok';
+    document.getElementById('sw-flares').textContent = flares.length || '0';
+    document.getElementById('sw-flares').className   = 'sw-val ' + flareLvl;
+    document.getElementById('sw-flares-sub').textContent =
+      xFlares ? `${xFlares} X-class ⚠` : mFlares ? `${mFlares} M-class` : '7-day window, none critical';
+
+    // CMEs
+    const cmeLvl = cmes.length > 2 ? 'warn' : 'ok';
+    document.getElementById('sw-cme').textContent = cmes.length || '0';
+    document.getElementById('sw-cme').className   = 'sw-val ' + cmeLvl;
+    const earthCMEs = cmes.filter(c => c.catalog && c.catalog.includes('EARTH')).length;
+    document.getElementById('sw-cme-sub').textContent = earthCMEs ? `${earthCMEs} Earth-directed` : 'No Earth-directed CMEs';
+
+    // SEP
+    const sepLvl = seps.length > 0 ? 'warn' : 'ok';
+    document.getElementById('sw-rad').textContent = seps.length > 0 ? 'ELEVATED' : 'NOMINAL';
+    document.getElementById('sw-rad').className   = 'sw-val ' + sepLvl;
+    document.getElementById('sw-rad-sub').textContent = seps.length ? `${seps.length} SEP event(s)` : 'No SEP events';
+
+    // GST / Kp
+    let maxKp = 0;
+    gsts.forEach(g => {
+      (g.allKpIndex || []).forEach(k => { if (k.kpIndex > maxKp) maxKp = k.kpIndex; });
+    });
+    const geoLvl = maxKp >= 7 ? 'alert' : maxKp >= 5 ? 'warn' : 'ok';
+    document.getElementById('sw-geo').textContent = maxKp > 0 ? 'Kp ' + maxKp : 'QUIET';
+    document.getElementById('sw-geo').className   = 'sw-val ' + geoLvl;
+    document.getElementById('sw-geo-sub').textContent = maxKp >= 5 ? 'G' + Math.min(5,Math.floor((maxKp-4))) + ' storm' : 'Quiet conditions';
+
+    // Event list — combine last 4 most recent notable events
+    const events = [];
+    flares.slice(-2).forEach(f => events.push({
+      type:'FLR', time: f.beginTime, label:`Solar Flare ${f.classType||''}`,
+      sub: f.sourceLocation || '', color:'var(--gold)'
+    }));
+    cmes.slice(-2).forEach(c => events.push({
+      type:'CME', time: c.time21_5||'', label:`CME · ${(c.type||'').toUpperCase()}`,
+      sub: `${c.speed||'?'} km/s`, color:'var(--accent2)'
+    }));
+    seps.slice(-1).forEach(s => events.push({
+      type:'SEP', time: s.eventTime||'', label:'SEP Radiation Event',
+      sub: 'Particle storm', color:'var(--red)'
+    }));
+
+    events.sort((a,b) => new Date(b.time) - new Date(a.time));
+    const evList = document.getElementById('sw-events-list');
+    if (!events.length) {
+      evList.innerHTML = '<div class="sw-event-item"><div class="sw-event-text" style="color:var(--text2)">No significant events in 7-day window</div></div>';
+    } else {
+      evList.innerHTML = events.slice(0,4).map(ev => {
+        const d = new Date(ev.time);
+        const ts = isNaN(d) ? '—' : d.toUTCString().slice(5,16);
+        return `<div class="sw-event-item">
+          <div class="sw-event-dot" style="background:${ev.color};box-shadow:0 0 5px ${ev.color};margin-top:5px;"></div>
+          <div>
+            <div class="sw-event-text">${ev.label}</div>
+            <div class="sw-event-sub">${ev.sub} · <span class="sw-event-time">${ts}</span></div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    donkiLastFetch = Date.now();
+    document.getElementById('donki-src').className  = 'src-badge src-api';
+    document.getElementById('donki-src').textContent = '● NASA DONKI';
+  } catch(e) {
+    console.warn('DONKI fetch failed:', e.message);
+    document.getElementById('donki-src').className  = 'src-badge src-err';
+    document.getElementById('donki-src').textContent = '✕ DONKI ERR';
+  }
+}
+
 /* ── BOOT ────────────────────────────────────────────── */
 // Initial API fetch
 refreshAPI();
 // Refresh from Worker every 60 seconds (matches edge cache TTL)
 setInterval(refreshAPI, 60000);
+
+// DSN: first fetch then tick every 1s (auto-fetches when countdown hits 0)
+fetchDSN();
+setInterval(tickDSN, 1000);
+
+// DONKI: fetch on load, refresh every 5 minutes
+fetchDONKI();
+setInterval(fetchDONKI, 5 * 60 * 1000);
 
 // UI update every second
 update();
